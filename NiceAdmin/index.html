@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Creative - Bootstrap 3 Responsive Admin Template">
+    <meta name="author" content="GeeksLabs">
+    <meta name="keyword" content="Creative, Dashboard, Admin, Template, Theme, Bootstrap, Responsive, Retina, Minimal">
+    <link rel="shortcut icon" href="img/favicon.png">
+    <title>Creative - Bootstrap Admin Template</title>
+    <!-- Bootstrap CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- bootstrap theme -->
+    <link href="css/bootstrap-theme.css" rel="stylesheet">
+    <!--external css-->
+    <!-- font icon -->
+    <link href="css/elegant-icons-style.css" rel="stylesheet" />
+    <link href="css/font-awesome.min.css" rel="stylesheet" />
+    <!-- full calendar css-->
+    <link href="assets/fullcalendar/fullcalendar/bootstrap-fullcalendar.css" rel="stylesheet" />
+    <link href="assets/fullcalendar/fullcalendar/fullcalendar.css" rel="stylesheet" />
+    <!-- easy pie chart-->
+    <link href="assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css" rel="stylesheet" type="text/css" media="screen" />
+    <!-- owl carousel -->
+    <link rel="stylesheet" href="css/owl.carousel.css" type="text/css">
+    <link href="css/jquery-jvectormap-1.2.2.css" rel="stylesheet">
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="css/fullcalendar.css">
+    <link href="css/widgets.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style-responsive.css" rel="stylesheet" />
+    <link href="css/xcharts.min.css" rel=" stylesheet">
+    <link href="css/jquery-ui-1.10.4.min.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+      <script src="js/respond.min.js"></script>
+      <script src="js/lte-ie7.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
+</head>
+
+<body>
+    <!-- container section start -->
+    <section id="container" class="">
+        <!--main content start-->
+        <section id="main-content">
+            <section class="wrapper">
+                <!--overview start-->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="page-header"><i class="fa fa-laptop"></i> Dashboard</h3>
+                    </div>
+                </div>
+                <div class="row">
+                </div>
+                <!--/.row-->
+                <div class="row">
+                    <div class="col-md-2">
+                        <form accept-charset="UTF-8" action="/loadcharts" data-remote="true" id="sidebarform" method="get">
+                            <div style="display:none">
+                                <input name="utf8" type="hidden" value="✓">
+                            </div>
+                            <li>
+                                Ride Date:
+                                <div class="input-prepend input-group">
+                                    <span class="add-on input-group-addon">
+                                        <i class="glyph-icon icon-calendar"></i>
+                                    </span>
+                                    <input class="form-control active" id="daterangepicker-example" name="ridedate" type="text" value="01/01/2014 - 01/01/2015">
+                                </div>
+                            </li>
+                            <br>
+                            <li>
+                                Bus Route:
+                                <div class="form-group">
+                                    <select class="form-control" id="fromneighborhoods" multiple="multiple" name="fromneighborhoods[]">
+                                        <optgroup label="Routes">
+                                            <option selected="selected" value="1">1</option>
+                                            <option selected="selected" value="2">2</option>
+                                            <option selected="selected" value="3">3</option>
+                                            <option selected="selected" value="4">4</option>
+                                            <option selected="selected" value="5">5</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </li>
+                        </form>
+                    </div>
+                    <div class="col-lg-7 col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h2><i class="fa fa-map-marker red"></i><strong>Transit Routes</strong></h2>
+                                <div class="panel-actions">
+                                    <a href="index.html#" class="btn-setting"><i class="fa fa-rotate-right"></i></a>
+                                    <!-- <a href="index.html#" class="btn-minimize"><i class="fa fa-chevron-up"></i></a> -->
+                                    <a href="index.html#" class="btn-close"><i class="fa fa-times"></i></a>
+                                </div>
+                            </div>
+                            <div class="panel-body-map">
+                                <div id="map" style="height:380px;"></div>
+                                <script type="text/javascript">
+                                cartodb.createVis('map', 'https://victorevector.cartodb.com/api/v2/viz/afac0356-1fd4-11e6-8323-0e674067d321/viz.json', {
+                                        fullscreen: true,
+                                        search: false,
+                                        shareable: false
+                                    })
+                                    .done(function(vis, layers) {
+                                        // layer 0 is the base layer, layer 1 is cartodb layer
+                                        // setInteraction is disabled by default
+                                        layers[1].setInteraction(true);
+                                        layers[1].on('featureOver', function(e, latlng, pos, data) {
+                                            cartodb.log.log(e, latlng, pos, data);
+                                        });
+                                        // you can get the native map to work with it
+                                        var map = vis.getNativeMap();
+                                        // now, perform any operations you need
+                                        // map.setZoom(3);
+                                        // map.panTo([50.5, 30.5]);
+
+                                    })
+                                    .error(function(err) {
+                                        console.log(err);
+                                    });
+
+                                cartodb.createLayer(map)
+                                    .addTo(map)
+                                    .on('done', function(layer) {
+
+                                        // change the query for the first layer
+                                        var subLayerOptions = {
+                                            sql: "SELECT * FROM transit_routes_gtfs_1 WHERE route_id ILIKE '%105%'",
+                                            cartocss: "#example_cartodbjs_1{marker-fill: #109DCD; marker-width: 5; marker-line-color: white; marker-line-width: 0;}"
+                                        }
+
+                                        var sublayer = layer.getSubLayer(0);
+                                        sublayer.set(subLayerOptions);
+
+                                        sublayer.infowindow.set('template', $('#infowindow_template').html());
+
+                                        sublayer.on('featureClick', function(e, latlng, pos, data) {
+                                            alert("Hey! You clicked " + data.cartodb_id);
+                                        });
+                                    }).on('error', function() {
+                                        //log the error
+                                    });
+
+                                // cartodb.createLayer(map, {
+                                //         user_name: 'mycartodbuser',
+                                //         type: 'cartodb',
+                                //         sublayers: [{
+                                //             sql: "SELECT * FROM transit_routes_gtfs_1 WHERE route_id ILIKE '%105%'",
+                                //             cartocss: '#table_name {marker-fill: #000000;}'
+                                //         }]
+                                //     })
+                                //     .addTo(map);
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="info-box blue-bg">
+                            <i class="fa fa-cloud-download"></i>
+                            <div class="count">6.674</div>
+                            <div class="title">Download</div>
+                        </div>
+                        <!--/.info-box-->
+                        <div class="info-box brown-bg">
+                            <i class="fa fa-shopping-cart"></i>
+                            <div class="count">7.538</div>
+                            <div class="title">Purchased</div>
+                        </div>
+                        <!--/.info-box-->
+                        <div class="info-box dark-bg">
+                            <i class="fa fa-thumbs-o-up"></i>
+                            <div class="count">4.362</div>
+                            <div class="title">Order</div>
+                        </div>
+                        <!--/.info-box-->
+                        <div class="info-box green-bg">
+                            <i class="fa fa-cubes"></i>
+                            <div class="count">1.426</div>
+                            <div class="title">Stock</div>
+                        </div>
+                        <!--/.info-box-->
+                    </div>
+                </div>
+                <!-- Today status end -->
+            </section>
+        </section>
+        <!--main content end-->
+    </section>
+    <!-- container section start -->
+    <!-- javascripts -->
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery-ui-1.10.4.min.js"></script>
+    <script src="js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.9.2.custom.min.js"></script>
+    <!-- bootstrap -->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- nice scroll -->
+    <script src="js/jquery.scrollTo.min.js"></script>
+    <script src="js/jquery.nicescroll.js" type="text/javascript"></script>
+    <!-- charts scripts -->
+    <script src="assets/jquery-knob/js/jquery.knob.js"></script>
+    <script src="js/jquery.sparkline.js" type="text/javascript"></script>
+    <script src="assets/jquery-easy-pie-chart/jquery.easy-pie-chart.js"></script>
+    <script src="js/owl.carousel.js"></script>
+    <!-- jQuery full calendar -->
+    <<script src="js/fullcalendar.min.js"></script>
+        <!-- Full Google Calendar - Calendar -->
+        <script src="assets/fullcalendar/fullcalendar/fullcalendar.js"></script>
+        <!--script for this page only-->
+        <script src="js/calendar-custom.js"></script>
+        <script src="js/jquery.rateit.min.js"></script>
+        <!-- custom select -->
+        <script src="js/jquery.customSelect.min.js"></script>
+        <script src="assets/chart-master/Chart.js"></script>
+        <!--custome script for all page-->
+        <script src="js/scripts.js"></script>
+        <!-- custom script for this page-->
+        <script src="js/sparkline-chart.js"></script>
+        <script src="js/easy-pie-chart.js"></script>
+        <script src="js/jquery-jvectormap-1.2.2.min.js"></script>
+        <script src="js/jquery-jvectormap-world-mill-en.js"></script>
+        <script src="js/xcharts.min.js"></script>
+        <script src="js/jquery.autosize.min.js"></script>
+        <script src="js/jquery.placeholder.min.js"></script>
+        <script src="js/gdp-data.js"></script>
+        <script src="js/morris.min.js"></script>
+        <script src="js/sparklines.js"></script>
+        <script src="js/charts.js"></script>
+        <script src="js/jquery.slimscroll.min.js"></script>
+        <script>
+        //knob
+        $(function() {
+            $(".knob").knob({
+                'draw': function() {
+                    $(this.i).val(this.cv + '%')
+                }
+            })
+        });
+
+        //carousel
+        $(document).ready(function() {
+            $("#owl-slider").owlCarousel({
+                navigation: true,
+                slideSpeed: 300,
+                paginationSpeed: 400,
+                singleItem: true
+
+            });
+        });
+
+        //custom select box
+
+        $(function() {
+            $('select.styled').customSelect();
+        });
+        </script>
+</body>
+
+</html>
