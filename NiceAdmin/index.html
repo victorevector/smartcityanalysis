@@ -8,7 +8,7 @@
     <meta name="author" content="GeeksLabs">
     <meta name="keyword" content="Creative, Dashboard, Admin, Template, Theme, Bootstrap, Responsive, Retina, Minimal">
     <link rel="shortcut icon" href="img/favicon.png">
-    <title>Creative - Bootstrap Admin Template</title>
+    <title>Dashboard</title>
     <!-- Bootstrap CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- bootstrap theme -->
@@ -75,7 +75,7 @@
                             <br>
                             <li>
                                 Bus Route:
-                                <div class="form-group">
+                                <div class="form-group route-container">
                                     <select class="form-control" id="fromneighborhoods" multiple="multiple" name="fromneighborhoods[]">
                                         <optgroup label="Routes">
                                             <option selected="selected" value="1">1</option>
@@ -105,57 +105,19 @@
                                 cartodb.createVis('map', 'https://victorevector.cartodb.com/api/v2/viz/afac0356-1fd4-11e6-8323-0e674067d321/viz.json', {
                                         fullscreen: true,
                                         search: false,
-                                        shareable: false
+                                        shareable: false,
+                                        zoom: 10
                                     })
                                     .done(function(vis, layers) {
-                                        // layer 0 is the base layer, layer 1 is cartodb layer
-                                        // setInteraction is disabled by default
-                                        layers[1].setInteraction(true);
-                                        layers[1].on('featureOver', function(e, latlng, pos, data) {
-                                            cartodb.log.log(e, latlng, pos, data);
-                                        });
-                                        // you can get the native map to work with it
                                         var map = vis.getNativeMap();
-                                        // now, perform any operations you need
-                                        // map.setZoom(3);
-                                        // map.panTo([50.5, 30.5]);
-
+                                        console.log(layers);
+                                        subLayer = layers[1].getSubLayer(0);
+                                        console.log(subLayer);
+                                        // subLayer.setSQL("SELECT * FROM transit_routes_gtfs_1 WHERE route_id = '105'");
                                     })
                                     .error(function(err) {
                                         console.log(err);
                                     });
-
-                                cartodb.createLayer(map)
-                                    .addTo(map)
-                                    .on('done', function(layer) {
-
-                                        // change the query for the first layer
-                                        var subLayerOptions = {
-                                            sql: "SELECT * FROM transit_routes_gtfs_1 WHERE route_id ILIKE '%105%'",
-                                            cartocss: "#example_cartodbjs_1{marker-fill: #109DCD; marker-width: 5; marker-line-color: white; marker-line-width: 0;}"
-                                        }
-
-                                        var sublayer = layer.getSubLayer(0);
-                                        sublayer.set(subLayerOptions);
-
-                                        sublayer.infowindow.set('template', $('#infowindow_template').html());
-
-                                        sublayer.on('featureClick', function(e, latlng, pos, data) {
-                                            alert("Hey! You clicked " + data.cartodb_id);
-                                        });
-                                    }).on('error', function() {
-                                        //log the error
-                                    });
-
-                                // cartodb.createLayer(map, {
-                                //         user_name: 'mycartodbuser',
-                                //         type: 'cartodb',
-                                //         sublayers: [{
-                                //             sql: "SELECT * FROM transit_routes_gtfs_1 WHERE route_id ILIKE '%105%'",
-                                //             cartocss: '#table_name {marker-fill: #000000;}'
-                                //         }]
-                                //     })
-                                //     .addTo(map);
                                 </script>
                             </div>
                         </div>
@@ -259,6 +221,15 @@
         $(function() {
             $('select.styled').customSelect();
         });
+        </script>
+        <script type="text/javascript">
+            $('optgroup').on('click', function(event){
+                var route = $(event.target).text();
+                console.log(route);
+                var s = "SELECT * FROM transit_routes_gtfs_1 WHERE route_id =" + "'"+route+"'";
+                console.log(s);
+                subLayer.setSQL(s);
+            });
         </script>
 </body>
 
